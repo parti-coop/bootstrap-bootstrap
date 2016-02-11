@@ -1,0 +1,21 @@
+%nav.navbar.navbar-inverse.navbar-fixed-top
+  .container
+    .navbar-header
+      %button.navbar-toggle.collapsed{"aria-controls" => "navbar", "aria-expanded" => "false", "data-target" => "#navbar", "data-toggle" => "collapse", :type => "button"}
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      %span.navbar-brand Parti.xyz Bootstrap
+    #navbar.navbar-collapse.collapse
+      %ul.nav.navbar-nav
+        %li{:class => is_active?('/')}
+          %a{:href => "/"} Home
+        %li{:class => is_active?('/getting-started')}
+          %a{:href => "/getting-started"} Getting started
+        %li{:class => is_active?('/css')}
+          %a{:href => "/css"} CSS
+        %li{:class => is_active?('/components')}
+          %a{:href => "/components"} Components
+        %li{:class => is_active?('/javascript')}
+          %a{:href => "/javascript"} Javascript
