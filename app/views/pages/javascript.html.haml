@@ -1,4 +1,24 @@
 %section#javascript
   .container
-    %h1 Pages#javascript
-    %p Find me in app/views/pages/javascript.html.haml
+    %h1 자바스크립트
+
+    %h2 자동 완성 autocomplete
+    %p http://plugins.upbootstrap.com/bootstrap-ajax-typeahead
+
+    %form
+      %input.typeahead{ data: { "typeahead-target" => '.typeahead-val' } }
+      %input.typeahead-val
+
+    :javascript
+      var typeaheadSource = [{ id: 1, name: 'John', year: '1977'}, { id: 2, name: 'Alex'}, { id: 3, name: 'Terry'}];
+
+      $('input.typeahead').typeahead({
+          source: typeaheadSource,
+          displayField: 'name',
+          onSelect: function(item, typeahead) {
+            $target = $(typeahead.$element.data('typeahead-target'));
+            if($target) {
+              $target.val( item.value );
+            }
+          },
+      });
