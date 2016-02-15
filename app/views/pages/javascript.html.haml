@@ -1,16 +1,153 @@
 %section#javascript
-  .container
-    %h1 자바스크립트
+  #content.bs-docs-header{:tabindex => '-1'}
+    .container
+      %h1 자바스크립트
+  .container.bs-docs-container
+    .row
+      .col-md-9{:role => 'main'}
+        .bs-docs-section
+          :kramdown
+            ## Typeahead 자동 완성
+            {:id="typeahead-autocompelte" class="page-header"}
 
-    %h2 자동 완성 autocomplete
-    %p http://plugins.upbootstrap.com/bootstrap-ajax-typeahead
+            라이브러리 소스 중 마지막 부분을 주석처리하고 사용한다.
 
-    %form
-      %input.typeahead{ data: { "typeahead-target" => '.typeahead-val' } }
-      %input.typeahead-val
+            * 설명: <http://plugins.upbootstrap.com/bootstrap-ajax-typeahead>{:target='_blank'}
+            * github: <https://github.com/biggora/bootstrap-ajax-typeahead>{:target='_blank'}
+
+            ### vendor/assets/javascripts/bootstrap-typeahead.js
+
+            <https://raw.githubusercontent.com/biggora/bootstrap-ajax-typeahead/master/js/bootstrap-typeahead.js>{:target="_blank"}
+
+            ~~~
+                # 515 line
+                $.fn.typeahead.Constructor = Typeahead;
+
+                /* TYPEAHEAD DATA-API
+                 * ================== */
+
+                //$(function () {
+                //    $('body').on('focus.typeahead.data-api', '[data-provide="typeahead"]', function (e) {
+                //        var $this = $(this);
+                //        if ($this.data('typeahead'))
+                //            return;
+                //        e.preventDefault();
+                //        $this.typeahead($this.data());
+                //    });
+                //});
+
+            }(window.jQuery);
+            ~~~
+            {:class="hightlight"}
+
+            ### app/views/_form.html.haml
+            {:id="appviewsformhtmlhaml"}
+
+            ~~~
+            = form_for @position do |f|
+              .form-group
+                %p 나는
+              .form-group
+                %p
+                  %input.typeahead{ type: 'text', placeholder: '이슈', data: { 'provider': 'typeahead', 'typeahead-url': issues_path, 'typeahead-display-field': 'title' }, name: 'issue_title', value: @position.issue.try(:title) }
+                  에 관하여
+              .form-group
+                = f.text_area :body, class: 'form-control'
+                %p 이란 입장에
+              .form-group
+                %p
+                  %select(class='form-control' style='width: 100px')
+                    %option{:value => "찬성", selected: :selected } 찬성
+                    %option{:value => "반대"} 반대
+                  합니다
+
+              %hr
+
+              .form-group
+                %p 왜냐하면
+                = text_area_tag :opinion, '', class: 'form-control'
+
+              = f.submit '입장 저장하기', class: 'btn btn-lg btn-primary'
+
+            ~~~
+
+            ### app/assets/javascripts/applications.js
+            {:id="appassetsjavascriptsapplicationsjs"}
+
+            ~~~
+              $('[data-provider="typeahead"]').each(function(i, elm) {
+                var $elm = $(elm);
+                var $target = $($elm.data('typeahead-target'));
+                var url = $elm.data('typeahead-url');
+                var displayField = $elm.data('typeahead-display-field');
+
+                if (!url) return;
+
+                $elm.typeahead({
+                  onSelect: function(item) {
+                    if ($target.length) $target.val( item.value );
+                  },
+                  ajax: {
+                    url: url,
+                    timeout: 500,
+                    displayField: displayField || 'name',
+                    triggerLength: 1,
+                    method: "get",
+                    preProcess: function (data) {
+                      if( $target.length && data.issues.length <= 0 ) $target.val('');
+                      return data.issues;
+                    }
+                  }
+                });
+              });
+            ~~~
+
+            ### source.json
+            ~~~
+              [
+                {
+                  "id": 1,
+                  "name": "John"
+                },
+                {
+                  "id": 2,
+                  "name": "Alex"
+                },
+                {
+                  "id": 3,
+                  "name": "Terry"
+                }
+              ]
+            ~~~
+
+          %h3#typeahead-example 예시
+          .bs-example
+            %form
+              .form-group
+                %label{ for: 'typeahead-keyword'} 일단 타이핑 ( name: John, Alex, Terry )
+                %input.typeahead.form-control#typeahead-keyword{ data: { "typeahead-target" => '.typeahead-val' } }
+              .form-group
+                %label{ for: 'typeahead-val'} 아이디 값 ( id )
+                %input.typeahead-val.form-control#typeahead-val
+
+
+      .col-md-3{:role => 'complementary'}
+        %nav.bs-docs-sidebar.hidden-print.hidden-xs.hidden-sm.affix
+          %ul.nav.bs-docs-sidenav
+            %li
+              %a{:href => "#typeahead-autocompelte"} Typeahead 자동 완성
+              %ul.nav
+                %li
+                  %a{:href => "#vendorassetsjavascriptsbootstrap-typeaheadjs"} bootstrap-typeahead.js
+                %li
+                  %a{:href => "#appviewsformhtmlhaml"} _form.html.haml
+                %li
+                  %a{:href => "#appassetsjavascriptsapplicationsjs"} applications.js
+                %li
+                  %a{:href => "#typeahead-example"} 예시
 
     :javascript
-      var typeaheadSource = [{ id: 1, name: 'John', year: '1977'}, { id: 2, name: 'Alex'}, { id: 3, name: 'Terry'}];
+      var typeaheadSource = [{ "id": 1, "name": 'John'}, { "id": 2, "name": 'Alex'}, { "id": 3, "name": 'Terry'}];
 
       $('input.typeahead').typeahead({
           source: typeaheadSource,
@@ -22,3 +159,4 @@
             }
           },
       });
+
