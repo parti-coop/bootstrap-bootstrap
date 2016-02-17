@@ -75,6 +75,12 @@
             {:id="appassetsjavascriptsapplicationsjs"}
 
             ~~~
+              //= require jquery
+              //= require jquery_ujs
+              //= require bootstrap
+              //= require bootstrap-typeahead
+              //= require_tree .
+
               $('[data-provider="typeahead"]').each(function(i, elm) {
                 var $elm = $(elm);
                 var $target = $($elm.data('typeahead-target'));
